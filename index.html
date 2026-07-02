@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>README Generator — Create Beautiful GitHub READMEs by Michael Zhang</title>
+<meta name="description" content="Free README.md generator for GitHub projects. Choose sections, fill in details, get perfectly formatted Markdown. No signup needed.">
+<style>
+:root{--bg:#0d1117;--s:#161b22;--b:#30363d;--t:#e6edf3;--m:#8b949e;--a:#58a6ff;--g:#3fb950;--r:#f85149}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t);line-height:1.6}
+.header{background:var(--s);border-bottom:1px solid var(--b);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:1.3rem}.header h1 span{color:var(--a)}.header .by{color:var(--m);font-size:.85rem}
+.header .by a{color:var(--a);text-decoration:none}
+.container{max-width:1200px;margin:0 auto;padding:1.5rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:1.5rem}
+.card h2{font-size:1.1rem;margin-bottom:1rem}
+label{display:block;font-size:.8rem;color:var(--m);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.05em;margin-top:.8rem}
+label:first-child{margin-top:0}
+input,textarea,select{width:100%;background:var(--bg);border:1px solid var(--b);border-radius:6px;color:var(--t);padding:.6rem;font-size:.9rem;font-family:inherit}
+input:focus,textarea:focus{outline:none;border-color:var(--a)}
+textarea{min-height:80px;resize:vertical}
+.btn{padding:.5rem 1.2rem;border-radius:6px;border:1px solid var(--b);background:var(--s);color:var(--t);cursor:pointer;font-size:.85rem;transition:all .15s;display:inline-flex;align-items:center;gap:.3rem}
+.btn-primary{background:var(--a);border-color:var(--a);color:#fff}
+.btn:hover{filter:brightness(1.2)}
+.actions{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+.sections{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+.section-toggle{padding:.4rem .8rem;border-radius:20px;border:1px solid var(--b);background:transparent;color:var(--m);cursor:pointer;font-size:.8rem;transition:all .2s}
+.section-toggle.on{background:rgba(88,166,255,0.15);border-color:var(--a);color:var(--a)}
+.preview{background:var(--bg);border:1px solid var(--b);border-radius:8px;padding:1.2rem;font-family:inherit;overflow-y:auto;max-height:80vh}
+.preview h1,.preview h2,.preview h3{margin:.8rem 0 .4rem}
+.preview h1{font-size:1.4rem;border-bottom:1px solid var(--b);padding-bottom:.4rem}
+.preview h2{font-size:1.15rem;border-bottom:1px solid var(--b);padding-bottom:.3rem}
+.preview h3{font-size:1rem}
+.preview p{margin:.4rem 0;color:var(--t)}
+.preview code{background:rgba(88,166,255,0.1);padding:.15rem .4rem;border-radius:4px;font-size:.85rem;color:var(--a)}
+.preview pre{background:var(--s);border:1px solid var(--b);border-radius:6px;padding:1rem;margin:.5rem 0;overflow-x:auto}
+.preview pre code{background:none;color:var(--t);padding:0}
+.preview ul,ol{padding-left:1.5rem;margin:.4rem 0}
+.preview li{margin:.2rem 0}
+.preview table{border-collapse:collapse;width:100%;margin:.5rem 0}
+.preview th,td{border:1px solid var(--b);padding:.4rem .6rem;text-align:left;font-size:.85rem}
+.preview th{background:var(--s)}
+.preview img{max-width:100%}
+.preview a{color:var(--a)}
+.preview blockquote{border-left:3px solid var(--a);padding-left:1rem;color:var(--m);margin:.5rem 0}
+.tabs{display:flex;gap:.5rem;margin-bottom:1rem}
+.tab{padding:.4rem 1rem;border-radius:6px;border:1px solid var(--b);background:transparent;color:var(--m);cursor:pointer;font-size:.85rem}
+.tab.active{background:var(--a);border-color:var(--a);color:#fff}
+.raw-md{background:var(--bg);border:1px solid var(--b);border-radius:8px;padding:1rem;font-family:'SF Mono','Fira Code',monospace;font-size:.8rem;white-space:pre-wrap;word-break:break-word;color:var(--g);max-height:80vh;overflow-y:auto}
+.ad-slot{background:var(--s);border:1px dashed var(--b);border-radius:8px;padding:1rem;text-align:center;color:var(--m);font-size:.8rem;margin:1.5rem 0;min-height:90px;display:flex;align-items:center;justify-content:center}
+.footer{text-align:center;padding:2rem;color:var(--m);font-size:.8rem;border-top:1px solid var(--b);margin-top:2rem}
+.footer a{color:var(--a);text-decoration:none}
+.badge-row{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.3rem}
+.badge-item{background:var(--bg);border:1px solid var(--b);border-radius:4px;padding:.2rem .5rem;font-size:.75rem;color:var(--m);display:flex;align-items:center;gap:.3rem}
+.badge-item .x{cursor:pointer;color:var(--r);font-weight:bold}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>📄 <span>README</span> Generator</h1>
+  <span class="by">by <a href="https://github.com/mzio">Michael Zhang</a> · <a href="https://michael-ami-01.github.io/devtools/">DevTools</a></span>
+</div>
+<div class="container">
+<div class="ad-slot"><!-- top ad --></div>
+<div class="grid">
+<div class="card" style="max-height:85vh;overflow-y:auto">
+  <h2>Project Details</h2>
+  <label>Project Name</label>
+  <input type="text" id="name" placeholder="awesome-project" oninput="gen()">
+  <label>Short Description</label>
+  <textarea id="short-desc" placeholder="A brief, catchy description of your project" style="min-height:50px" oninput="gen()"></textarea>
+  <label>Long Description</label>
+  <textarea id="long-desc" placeholder="Detailed explanation of what the project does and why it exists..." oninput="gen()"></textarea>
+
+  <h2 style="margin-top:1.2rem">Sections to Include</h2>
+  <div class="sections" id="section-toggles"></div>
+
+  <div id="section-fields"></div>
+
+  <label style="margin-top:1.2rem">Tech Stack / Badges</label>
+  <div style="display:flex;gap:.3rem">
+    <input type="text" id="badge-input" placeholder="e.g. Python, React, MIT" style="flex:1" onkeydown="if(event.key==='Enter'){addBadge();event.preventDefault()}">
+    <button class="btn" onclick="addBadge()">+ Add</button>
+  </div>
+  <div class="badge-row" id="badges"></div>
+</div>
+
+<div>
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('rendered',this)">Preview</button>
+      <button class="tab" onclick="showTab('raw',this)">Markdown</button>
+    </div>
+    <div class="actions" style="margin-top:0;margin-bottom:1rem">
+      <button class="btn btn-primary" onclick="copyMD()">📋 Copy Markdown</button>
+      <button class="btn" onclick="downloadMD()">💾 Download README.md</button>
+    </div>
+    <div id="view-rendered" class="preview"></div>
+    <div id="view-raw" class="raw-md" style="display:none"></div>
+  </div>
+</div>
+</div>
+<div class="ad-slot"><!-- bottom ad --></div>
+</div>
+<div class="footer">
+  Built by <a href="https://github.com/mzio">Michael Zhang</a> · <a href="https://michael-ami-01.github.io/devtools/">DevTools Suite</a> · <a href="https://github.com/michael-ami-01/readme-generator">Source</a>
+</div>
+<script>
+const SECTIONS=[
+  {id:'features',label:'Features',default:true,field:'textarea',ph:'- ✨ Feature one\n- 🚀 Feature two\n- 🔒 Feature three'},
+  {id:'install',label:'Installation',default:true,field:'textarea',ph:'```bash\nnpm install awesome-project\n```'},
+  {id:'usage',label:'Usage',default:true,field:'textarea',ph:'```javascript\nimport { thing } from "awesome-project";\nconsole.log(thing());\n```'},
+  {id:'api',label:'API Reference',default:false,field:'textarea',ph:'### `functionName(param)`\n\nDescription of the function.\n\n| Parameter | Type | Description |\n|-----------|------|-------------|\n| `param` | `string` | Required. Your param |'},
+  {id:'config',label:'Configuration',default:false,field:'textarea',ph:'Create a `.env` file:\n```\nAPI_KEY=your-key\nPORT=3000\n```'},
+  {id:'contributing',label:'Contributing',default:true,field:'textarea',ph:'Contributions are welcome! Please read the contributing guidelines first.\n\n1. Fork the repo\n2. Create your feature branch (`git checkout -b feature/amazing`)\n3. Commit changes (`git commit -m "Add amazing feature"`)\n4. Push (`git push origin feature/amazing`)\n5. Open a Pull Request'},
+  {id:'license',label:'License',default:true,field:'select',options:['MIT','Apache 2.0','GPL 3.0','BSD 3-Clause','ISC','Unlicense']},
+  {id:'roadmap',label:'Roadmap',default:false,field:'textarea',ph:'- [x] Initial release\n- [ ] Feature A\n- [ ] Feature B\n- [ ] v2.0 rewrite'},
+  {id:'faq',label:'FAQ',default:false,field:'textarea',ph:'**Q: How do I X?**\nA: You can X by doing Y.\n\n**Q: Does it support Z?**\nA: Yes, since v1.2.'},
+  {id:'acknowledgements',label:'Acknowledgements',default:false,field:'textarea',ph:'- [Awesome Library](https://example.com)\n- Inspired by [Cool Project](https://example.com)'}
+];
+let activeSections=new Set(SECTIONS.filter(s=>s.default).map(s=>s.id));
+let badges=[];
+
+function initToggles(){
+  const c=document.getElementById('section-toggles');
+  SECTIONS.forEach(s=>{
+    const b=document.createElement('button');
+    b.className='section-toggle'+(activeSections.has(s.id)?' on':'');
+    b.textContent=s.label;
+    b.onclick=()=>{
+      if(activeSections.has(s.id))activeSections.delete(s.id);else activeSections.add(s.id);
+      b.classList.toggle('on');
+      renderFields();gen();
+    };
+    c.appendChild(b);
+  });
+  renderFields();
+}
+
+function renderFields(){
+  const c=document.getElementById('section-fields');
+  c.innerHTML='';
+  SECTIONS.filter(s=>activeSections.has(s.id)).forEach(s=>{
+    const l=document.createElement('label');l.style.marginTop='1rem';l.textContent=s.label;c.appendChild(l);
+    if(s.field==='textarea'){
+      const t=document.createElement('textarea');t.id='f-'+s.id;t.placeholder=s.ph||'';t.oninput=gen;
+      const old=document.querySelector('[data-sid="'+s.id+'"]');
+      if(old)t.value=old.value;
+      t.setAttribute('data-sid',s.id);c.appendChild(t);
+    }else if(s.field==='select'){
+      const sel=document.createElement('select');sel.id='f-'+s.id;sel.onchange=gen;
+      s.options.forEach(o=>{const op=document.createElement('option');op.value=o;op.textContent=o;sel.appendChild(op)});
+      c.appendChild(sel);
+    }
+  });
+}
+
+function addBadge(){
+  const inp=document.getElementById('badge-input');
+  const v=inp.value.trim();if(!v)return;
+  badges.push(v);inp.value='';renderBadges();gen();
+}
+function removeBadge(i){badges.splice(i,1);renderBadges();gen();}
+function renderBadges(){
+  const c=document.getElementById('badges');c.innerHTML='';
+  badges.forEach((b,i)=>{
+    const d=document.createElement('span');d.className='badge-item';
+    d.innerHTML=b+' <span class="x" onclick="removeBadge('+i+')">&times;</span>';
+    c.appendChild(d);
+  });
+}
+
+function gv(id){const e=document.getElementById(id);return e?e.value.trim():'';}
+
+function gen(){
+  const name=gv('name')||'awesome-project';
+  const shortDesc=gv('short-desc');
+  const longDesc=gv('long-desc');
+  let md='';
+
+  // Badges
+  if(badges.length){
+    md+=badges.map(b=>{
+      const slug=b.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_.-]/g,'');
+      const color=['blue','green','orange','red','purple','yellow','brightgreen','blueviolet'][Math.floor(b.length%8)];
+      return '!['+b+'](https://img.shields.io/badge/'+encodeURIComponent(b)+'-'+color+'?style=flat-square)';
+    }).join(' ')+'\n\n';
+  }
+
+  md+='# '+name+'\n\n';
+  if(shortDesc) md+='> '+shortDesc+'\n\n';
+  if(longDesc) md+=longDesc+'\n\n';
+
+  // Table of contents
+  const active=SECTIONS.filter(s=>activeSections.has(s.id));
+  if(active.length>3){
+    md+='## Table of Contents\n\n';
+    active.forEach(s=>{md+='- ['+s.label+'](#'+s.label.toLowerCase().replace(/\s+/g,'-')+')\n';});
+    md+='\n';
+  }
+
+  active.forEach(s=>{
+    md+='## '+s.label+'\n\n';
+    const val=gv('f-'+s.id);
+    if(s.id==='license'){
+      md+='This project is licensed under the '+(val||'MIT')+' License — see the [LICENSE](LICENSE) file for details.\n\n';
+    }else{
+      md+=(val||s.ph||'_Coming soon_')+'\n\n';
+    }
+  });
+
+  md+='---\n\n';
+  md+='Made with ❤️ by ['+name+'](https://github.com/'+name+')\n';
+
+  document.getElementById('view-raw').textContent=md;
+  document.getElementById('view-rendered').innerHTML=renderMarkdown(md);
+}
+
+function renderMarkdown(md){
+  let html=md;
+  // code blocks
+  html=html.replace(/```(\w*)\n([\s\S]*?)```/g,(m,lang,code)=>'<pre><code>'+esc(code.trim())+'</code></pre>');
+  // inline code
+  html=html.replace(/`([^`]+)`/g,'<code>$1</code>');
+  // headers
+  html=html.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+  html=html.replace(/^## (.+)$/gm,'<h2>$1</h2>');
+  html=html.replace(/^# (.+)$/gm,'<h1>$1</h1>');
+  // bold/italic
+  html=html.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  html=html.replace(/\*(.+?)\*/g,'<em>$1</em>');
+  // links
+  html=html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'<img src="$2" alt="$1">');
+  html=html.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2">$1</a>');
+  // blockquote
+  html=html.replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>');
+  // lists
+  html=html.replace(/^- \[x\] (.+)$/gm,'<li>☑️ $1</li>');
+  html=html.replace(/^- \[ \] (.+)$/gm,'<li>⬜ $1</li>');
+  html=html.replace(/^- (.+)$/gm,'<li>$1</li>');
+  html=html.replace(/^(\d+)\. (.+)$/gm,'<li>$1. $2</li>');
+  // tables
+  html=html.replace(/^\|(.+)\|$/gm,(m,row)=>{
+    if(row.match(/^[\s-|]+$/))return'';
+    const cells=row.split('|').map(c=>c.trim());
+    return'<tr>'+cells.map(c=>'<td>'+c+'</td>').join('')+'</tr>';
+  });
+  html=html.replace(/(<tr>[\s\S]*?<\/tr>)/g,'<table>$1</table>');
+  // hr
+  html=html.replace(/^---$/gm,'<hr>');
+  // paragraphs
+  html=html.replace(/\n\n/g,'</p><p>');
+  return'<p>'+html+'</p>';
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function showTab(which,btn){
+  document.getElementById('view-rendered').style.display=which==='rendered'?'block':'none';
+  document.getElementById('view-raw').style.display=which==='raw'?'block':'none';
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+}
+function copyMD(){navigator.clipboard.writeText(document.getElementById('view-raw').textContent);}
+function downloadMD(){
+  const b=new Blob([document.getElementById('view-raw').textContent],{type:'text/markdown'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='README.md';a.click();
+}
+initToggles();gen();
+</script>
+</body>
+</html>
